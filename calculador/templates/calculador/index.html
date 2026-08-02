@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcular Zona de Fresnel</title>
+    
+    <style>
+        
+        body{
+            
+            background-color: black;
+            color: white;                  
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            
+            /*alineacion al centro*/
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            
+        }
+
+        /*caja contenedora para limitar el ancho y mantener todo prolijo*/
+        .contenedor{
+
+            max-width: 600px; /*ancho maximo para que los textos sean comodos de leer*/
+            width: 100%;
+            text-align: center;  /*centra los titulos y los textos*/ 
+
+        }
+        
+        /*alineamos los campos del formulario para que queden prolijos*/
+        form{
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /*espacio uniforme entre cada elemento del formulario*/ 
+
+        }
+
+        input[type="number"]{
+            
+            background-color: #1a1a1a;
+            color: white;
+            border: 1px solid #444;
+            padding: 5px;
+            
+        }
+
+        button{
+
+            background-color: #0066ff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 102, 255, 0.3);
+
+        }
+
+        /*efecto al pasar el cursor por el boton*/
+        button:hover{
+
+            background-color: #0052cc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 102, 255, 0.5);
+
+        }
+
+        .imagen-fresnel{
+
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #333;
+
+        }
+
+        .seccion-avanzada{
+
+            border-top: 1px dashed #444;
+            margin-top: 20px;
+            padding-top: 15px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+
+        }
+        
+    </style>
+        <!--color: color de las letras de texto, background-color es el color del fondo de la pagina-->
+
+</head>
+
+    <body>
+
+        <!--la caja contenedora!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <div class="contenedor">
+     
+            <h1>Calculadora de la Zona de Fresnel </h1>
+            <h2>¿Qué es la Zona de Fresnel?</h2>
+            <p> 
+                Aunque nosotros pensemos que la señal de radio viaja en una sola línea recta como un rayo láser de una antena a otra,
+                en la realidad no es así.
+                Las ondas electromagnéticas se expanden hacia los lados a medida que viajan. La Zona de Fresnel es todo ese volumen de espacio tridimensional por el cual viaja la energía de la señal.
+            </p>
+
+            <img src="{% static 'calculador/images/fresnel.webp' %}" alt="zona de fresnel" class="imagen-fresnel">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <!--campo de la distancia D-->
+                <div>
+                    <label for="distancia">Distancia (D) en km:</label>
+                    <p>Distancia en línea recta entre la antena emisora y la antena receptora (medida en kilómetros).</p>
+                    <input type="number" step="any" min="0.01" name="distancia" id="distancia" placeholder="Ej: 10.5 (solo numeros y puntos)" title="Ingresar solo numeros. Usar punto (.) para los decimales" style="width: 207px;" required> <!-- type=number (le dice al navegador que tipo de dato debe mostrar en pantalla) step="any" (le indica al navegador que tipo de numeros permite ingresar en un campo del tipo type=number)required: atributo requerido-->
+                </div>
+                
+                <!--campo de la frecuencia F-->
+                <div>
+                    <label for="frecuencia">Frecuencia (F) en GHz</label>
+                    <p>Frecuencia de trabajo de tus equipos de radio/WiFi (medida en Gigahertz, por ejemplo: 2.4 o 5.8 GHz).</p>
+                    <input type="number" step="any" min="0.01" name="frecuencia" id="frecuencia" placeholder="Ej: 5.8 (solo numeros y puntos)" title="Ingresar solo numeros. Usar punto (.) para decimales" style="width: 207px;" required>
+                </div>
+                
+                <!--Opciones avanzadas-->
+                <div class="seccion-avanzada">
+
+                    <h2>
+                        Opciones avanzadas (Análisis de Obstáculos)
+                    </h2>
+
+                    <small style="color: #888; margin-bottom: 10px;">
+                        Campos opcionales. Completalos si querés evaluar un árbol o edificio en el camino.
+                    </small>
+                    
+                    <!--Altura de las antenas 1 y 2-->
+
+                    <div>
+                        <label for="altura1">Altura de la antena 1 (m):</label>
+                        <input type="number" step="any" min="0.01" name="altura1" id="altura1" placeholder="Ej: 14.2">
+                    </div>
+
+                    <div>
+                        <label for="altura2">Altura de la antena 2 (m):</label>
+                        <input type="number" step="any" min="0.01" name="altura2" id="altura2" placeholder="Ej: 12.1">
+                    </div>
+
+                    <!--Distancia del obstaculo entre las antenas-->
+
+                    <div>
+                        <label for="distanciaObs">Distancia entre la antena 1 y el obstaculo (km): </label>
+                        <input type="number" step="any" min="0.01" name="distanciaObs" id="distanciaObs" placeholder="Ej: 1.2">
+                    </div>
+                    
+                    <!--Altura del obstaculo-->
+
+                    <div>
+                        <label for="alturaObs">Altura del obstaculo (m):</label>
+                        <input type="number" step="any" min="0.01" name="alturaObs" id="alturaObs" placeholder="Ej: 5.2">
+                    </div>
+
+                </div>
+
+                <button type="submit">Calcular</button>
+                
+            </form>
+
+            
+            {% if resultado %}
+
+                <div style="background-color: #1a1a1a; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-top: 25px; text-align: left;">
+                    <h2 style="margin-top: 0; color: #0066ff;">Resultados del calculo</h2>
+                    <p><strong>Radio maximo (punto medio): </strong>{{ resultado }} metros</p>
+
+                    {% if evaluar_obstaculo %}
+
+                        <hr style="border-color: #333; margin: 15px 0;"> <!--hr es una linea visual divisoria-->
+                        <h3 style="color: #ccc;">Analisis del obstaculo</h3>
+                        <p><strong>Altura de la linea de vista (LOS):</strong> {{ alturaLOS }} m</p> <!--la etiqueta strong sirve para remarcar como importante el texto o la famosa "negrita"-->
+                        <p><strong>Radio de la zona en el obstaculo:</strong> {{ radioObs }} m</p>
+
+                        {% if despejado %}
+                            <p style="color: #28a745; font-weight: bold; font-size: 1.1em;">
+                                ¡Enlace despejado!
+                            </p>
+
+                            <p style="font-size: 0.9em; color: #aaa;">
+                                El obstaculo deja un margen libre de <strong>{{ margen }} metros</strong> respecto al 60% requerido
+                            </p>
+
+                        {% else %}
+                            <p style="color: #dc3545; font-weight: bold; font-size: 1.1em;">
+                                ¡Alerta de obstruccion!
+                            </p>
+
+                            <p style="font-size: 0.9em; color: #aaa;">
+                                El obstaculo invade la zona libre por <strong> {{ margen }} metros</strong>. Se recomienda dar mas altura a las antenas
+                            </p>    
+
+                        {% endif %}
+                    {% endif %}
+
+                    {% if error_obstaculo %}
+                            <p style="color: #dc3545; font-weight: bold;">
+                                {{error_obstaculo}}
+                            </p>
+
+                    {% endif %}
+
+                </div> 
+
+            {% endif %}
+
+
+            <footer style="margin-top: 40px; padding-top: 15px; border-top: 1px solid #333; font-size: 13px; color: #888;">
+                <p>Marcos Nicolas Altamirano / 2026</p>
+            </footer>
+
+        </div>
+
+    </body>
+
+    
+</html>
