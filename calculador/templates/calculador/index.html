@@ -77,7 +77,7 @@
             
             background-color: #ffffff;      /*fondo blanco*/
             color: #111111;                 /*texto ingresado bien negro y legible*/
-            border: 1px solid #ccc;         /* borde gris*/
+            border: 1px solid black;         
             padding: 8px;
             border-radius: 4px;
             outline: none;
@@ -315,7 +315,18 @@
                         {% else %}
                         El obstáculo invade un <strong>{{ porcentaje_obstruido }}%</strong> del radio (supera el 40% máximo permitido). Se recomienda elevar las antenas.
                         {% endif %}
-                    </p>    
+                    </p>   
+                    
+                    <!--Recomendacion numerica exacta-->
+                    <div style="background-color: #fff3cd; border: 1px;">
+                        
+                        <strong style="color: #664d03;">Recomendaciones para viabilizar el enlace</strong>
+                        <p>
+                            debes elevar la linea de vista un minimo de <strong>{{ metros_faltantes }} metros </strong> (subiendo una o ambas antenas) para despejar el 60% obligatorio de la zona de Fresnel 
+                        </p>
+
+
+                    </div>
                     
                     {% endif %}
                     {% endif %}
